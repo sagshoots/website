@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — SagShoots Photography</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .simple-content {
+            max-width: clamp(400px, 70vw, 900px);
+        }
+
+        .contact-form {
+            width: 100%;
+            margin-top: 2.5rem;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--warm-grey);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            color: var(--charcoal);
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--border);
+            outline: none;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .form-group textarea {
+            min-height: 140px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        .form-submit {
+            display: inline-block;
+            padding: 0.875rem 2.5rem;
+            background: var(--charcoal);
+            color: var(--cream);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: 1px solid var(--charcoal);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .form-submit:hover {
+            background: transparent;
+            color: var(--charcoal);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">SagShoots Photography</a>
+            <ul class="nav-links">
+                <li><a href="index.html">About</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+                <li><a href="https://sagshoots.substack.com/" target="_blank" rel="noopener noreferrer">Blog</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="simple-page">
+        <div class="simple-background"></div>
+        <div class="simple-content">
+            <h1>Contact</h1>
+            <p>For inquiries and bookings:<br><a href="mailto:josh@sagshoots.photos" style="color: var(--accent); text-decoration: none;">josh@sagshoots.photos</a></p>
+
+            <div class="contact-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Your email">
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" placeholder="What's this about?">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" placeholder="Tell me what you're looking for..."></textarea>
+                </div>
+                <button class="form-submit" onclick="sendMessage()">Send Message</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function sendMessage() {
+            const btn = document.querySelector('.form-submit');
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            if (!name || !email || !message) {
+                btn.textContent = 'Please fill in all fields';
+                btn.style.borderColor = '#b5655a';
+                btn.style.color = '#b5655a';
+                setTimeout(() => {
+                    btn.textContent = 'Send Message';
+                    btn.style.borderColor = '';
+                    btn.style.color = '';
+                }, 2500);
+                return;
+            }
+
+            btn.textContent = 'Sending...';
+            btn.disabled = true;
+
+            fetch('https://script.google.com/macros/s/AKfycbzIwrY6gnPlo_3Uqefm4nVimhoNmM_8SEvntT1vROU8_gWh-BEV0o7xz4KFYX_Hc4ScQg/exec', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, email: email, subject: subject, message: message })
+            }).then(() => {
+                btn.textContent = 'Message Sent ✓';
+                btn.style.background = 'transparent';
+                btn.style.color = 'var(--accent)';
+                btn.style.borderColor = 'var(--accent)';
+                document.getElementById('name').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('subject').value = '';
+                document.getElementById('message').value = '';
+                setTimeout(() => {
+                    btn.textContent = 'Send Message';
+                    btn.style.background = '';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                    btn.disabled = false;
+                }, 3000);
+            }).catch(() => {
+                btn.textContent = 'Error — try again';
+                btn.disabled = false;
+                setTimeout(() => { btn.textContent = 'Send Message'; }, 2500);
+            });
+        }
+    </script>
+</body>
+</html>
